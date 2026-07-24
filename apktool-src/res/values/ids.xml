@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <id name="prof_add" />
+    <id name="prof_del" />
+    <id name="switch_action_button" />
+    <id name="switch_main" />
+</resources>

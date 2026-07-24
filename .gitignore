@@ -1,0 +1,13 @@
+# build intermediates
+dist/*-unsigned.apk
+dist/*-aligned.apk
+*.jks
+*.keystore
+local.properties
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# keep release APKs if present
+!dist/AIT_Socks-*.apk
