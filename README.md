@@ -23,6 +23,30 @@ adb install -r AIT_Socks-v1.0.0.apk
 
 First run may show a **one-time** Android VPN permission dialog — tap OK. After that, control is fully headless.
 
+### MiChanger Samsung S9 ROM — skip / pre-allow VPN via AppOps
+
+On **MiChanger custom ROM for Samsung S9** (e.g. `SamsungS9` / `s9_adr10_new` style images used with MiChangerPlus), you can pre-allow VPN activation over ADB:
+
+```bash
+adb shell appops set com.ait.socks ACTIVATE_VPN allow
+```
+
+Recommended order for farm scripts on that ROM:
+
+```bash
+adb install -r AIT_Socks-v1.0.0.apk
+adb shell appops set com.ait.socks ACTIVATE_VPN allow
+adb shell am start -n com.ait.socks/net.typeblog.socks.MainActivity \
+  --es intent_ip "HOST" \
+  --ei intent_port 1080 \
+  --ez intent_start true
+```
+
+This has been verified on MiChanger S9 devices: set **AppOps first**, then start the intent — typically **no VPN consent dialog**.  
+On stock Android / other ROMs, `ACTIVATE_VPN allow` may not replace the system VPN dialog; you may still need a one-time OK (or UI automation).
+
+Re-run `appops set … allow` after reinstall, app data clear, or if you used **Forget VPN** in system settings.
+
 ---
 
 ## Quick start (ADB)
@@ -30,6 +54,9 @@ First run may show a **one-time** Android VPN permission dialog — tap OK. Afte
 ### Start SOCKS5
 
 ```bash
+# On MiChanger S9 ROM — run AppOps first (see above)
+adb shell appops set com.ait.socks ACTIVATE_VPN allow
+
 adb shell am start -n com.ait.socks/net.typeblog.socks.MainActivity \
   --es intent_ip "160.250.166.22" \
   --ei intent_port 11245 \
@@ -107,7 +134,13 @@ import subprocess
 
 def set_socks(serial: str, host: str, port: int,
               user: str | None = None, password: str | None = None,
-              start: bool = True) -> None:
+              start: bool = True, michanger_s9: bool = True) -> None:
+    if michanger_s9 and start:
+        # MiChanger Samsung S9 ROM: pre-allow VPN (avoids consent dialog)
+        subprocess.check_call([
+            "adb", "-s", serial, "shell",
+            "appops", "set", "com.ait.socks", "ACTIVATE_VPN", "allow",
+        ])
     cmd = [
         "adb", "-s", serial, "shell", "am", "start",
         "-n", "com.ait.socks/net.typeblog.socks.MainActivity",
