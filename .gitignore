@@ -1,6 +1,7 @@
 # build intermediates
 dist/*-unsigned.apk
 dist/*-aligned.apk
+dist/*.idsig
 *.jks
 *.keystore
 local.properties
