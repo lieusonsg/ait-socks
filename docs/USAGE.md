@@ -33,7 +33,7 @@ Run it **before** starting VPN. Re-apply after reinstall, clear data, or system 
 ## After factory reset
 
 ```bash
-adb install -r AIT_Socks-v1.0.0.apk
+adb install -r AIT_Socks-v1.0.1.apk
 # MiChanger S9 ROM:
 adb shell appops set com.ait.socks ACTIVATE_VPN allow
 adb shell am start -n com.ait.socks/net.typeblog.socks.MainActivity \

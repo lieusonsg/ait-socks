@@ -18,7 +18,7 @@ Download the latest APK from [Releases](https://github.com/lieusonsg/ait-socks/r
 | VPN | system `VpnService` |
 
 ```bash
-adb install -r AIT_Socks-v1.0.0.apk
+adb install -r AIT_Socks-v1.0.1.apk
 ```
 
 First run may show a **one-time** Android VPN permission dialog — tap OK. After that, control is fully headless.
@@ -34,7 +34,7 @@ adb shell appops set com.ait.socks ACTIVATE_VPN allow
 Recommended order for farm scripts on that ROM:
 
 ```bash
-adb install -r AIT_Socks-v1.0.0.apk
+adb install -r AIT_Socks-v1.0.1.apk
 adb shell appops set com.ait.socks ACTIVATE_VPN allow
 adb shell am start -n com.ait.socks/net.typeblog.socks.MainActivity \
   --es intent_ip "HOST" \
@@ -165,12 +165,20 @@ Launch **AIT Socks** from the app drawer to edit profiles (same preference UI as
 
 ## Build from this repo
 
-Requires: [apktool](https://apktool.org/), JDK (`jarsigner` / `keytool`).
+Requires: [apktool](https://apktool.org/), JDK (`keytool`), and Android SDK **build-tools** (`zipalign` + `apksigner`). The script finds build-tools via `ANDROID_SDK_ROOT` / `ANDROID_HOME` / `%LOCALAPPDATA%\Android\Sdk`, or from `PATH`; install with `sdkmanager "build-tools;34.0.0"`.
 
 ```powershell
 # Windows
 powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1
-# output: dist\AIT_Socks-v1.0.0.apk
+# output: dist\AIT_Socks-v1.0.1.apk
+```
+
+The build runs `apktool b` → `zipalign -p -f 4` → `apksigner sign` (v1+v2+v3) → verify, in that order. `jarsigner` must not be used: it only produces a v1 signature and rewrites the zip, breaking the 4-byte alignment of `resources.arsc`. Because the app targets API 31, an APK built that way installs fine on Android ≤ 10 (e.g. Galaxy S9) but fails on Android 11+ with:
+
+```
+Failure [-124: Failed parse during installPackageLI: Targeting R+ (version 30 and above)
+requires the resources.arsc of installed APKs to be stored uncompressed and aligned on a
+4-byte boundary]
 ```
 
 Patched activity reference (Java, for maintainers):

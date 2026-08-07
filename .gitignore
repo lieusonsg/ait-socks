@@ -1,6 +1,7 @@
 # build intermediates
 dist/*-unsigned.apk
 dist/*-aligned.apk
+dist/*.idsig
 *.jks
 *.keystore
 local.properties
@@ -9,5 +10,5 @@ local.properties
 .DS_Store
 Thumbs.db
 
-# keep release APKs if present
-!dist/AIT_Socks-*.apk
+# keep versioned release APKs if present (must not re-include the intermediates above)
+!dist/AIT_Socks-v*.apk
