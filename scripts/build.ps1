@@ -14,7 +14,7 @@ if (-not (Test-Path $Tree)) {
   $Tree = Join-Path $Root "apktool-src"
 }
 $OutDir = Join-Path $Root "dist"
-$Version = "1.0.0"
+$Version = "1.0.1"
 $Unsigned = Join-Path $OutDir "AIT_Socks-unsigned.apk"
 $Aligned = Join-Path $OutDir "AIT_Socks-aligned.apk"
 $Signed = Join-Path $OutDir "AIT_Socks-v$Version.apk"
